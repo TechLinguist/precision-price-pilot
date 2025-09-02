@@ -94,7 +94,7 @@ const Optimization = () => {
     });
   };
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = (event) => {
     const file = event.target.files?.[0];
     if (file) {
       toast({
@@ -124,12 +124,12 @@ const Optimization = () => {
                 <Link to="/optimization" className="text-foreground font-medium border-b-2 border-primary pb-1">
                   Optimization
                 </Link>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link to="/analytics" className="text-muted-foreground hover:text-foreground transition-colors">
                   Analytics
-                </a>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                </Link>
+                <Link to="/reports" className="text-muted-foreground hover:text-foreground transition-colors">
                   Reports
-                </a>
+                </Link>
               </nav>
             </div>
             <div className="flex items-center space-x-4">

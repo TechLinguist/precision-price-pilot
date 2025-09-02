@@ -49,12 +49,12 @@ const Dashboard = () => {
                 <Link to="/optimization" className="text-muted-foreground hover:text-foreground transition-colors">
                   Optimization
                 </Link>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link to="/analytics" className="text-muted-foreground hover:text-foreground transition-colors">
                   Analytics
-                </a>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                </Link>
+                <Link to="/reports" className="text-muted-foreground hover:text-foreground transition-colors">
                   Reports
-                </a>
+                </Link>
               </nav>
             </div>
             <div className="flex items-center space-x-4">

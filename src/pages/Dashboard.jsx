@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Link } from "react-router-dom";
 import { 
   TrendingUp, 
@@ -14,7 +15,13 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   Activity,
-  Package
+  Package,
+  LogOut,
+  UserCircle,
+  Palette,
+  Shield,
+  HelpCircle,
+  Check
 } from "lucide-react";
 
 const Dashboard = () => {
@@ -58,27 +65,119 @@ const Dashboard = () => {
               </nav>
             </div>
             <div className="flex items-center space-x-4">
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => alert('Notifications feature coming soon!')}
-              >
-                <Bell className="w-4 h-4" />
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => alert('Settings feature coming soon!')}
-              >
-                <Settings className="w-4 h-4" />
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => alert('Profile feature coming soon!')}
-              >
-                <User className="w-4 h-4" />
-              </Button>
+              {/* Notifications Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="relative">
+                    <Bell className="w-4 h-4" />
+                    <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full text-xs flex items-center justify-center text-white">3</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-80">
+                  <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="flex items-start space-x-3 p-3">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <div>
+                      <p className="font-medium text-sm">Price optimization completed</p>
+                      <p className="text-xs text-muted-foreground">247 products updated successfully</p>
+                      <p className="text-xs text-muted-foreground mt-1">2 minutes ago</p>
+                    </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="flex items-start space-x-3 p-3">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <div>
+                      <p className="font-medium text-sm">Revenue target achieved</p>
+                      <p className="text-xs text-muted-foreground">Monthly target reached 3 days early</p>
+                      <p className="text-xs text-muted-foreground mt-1">1 hour ago</p>
+                    </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="flex items-start space-x-3 p-3">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
+                    <div>
+                      <p className="font-medium text-sm">System maintenance scheduled</p>
+                      <p className="text-xs text-muted-foreground">Maintenance window: Tonight 2-4 AM</p>
+                      <p className="text-xs text-muted-foreground mt-1">3 hours ago</p>
+                    </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="text-center">
+                    <span className="text-sm text-muted-foreground">View all notifications</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              {/* Settings Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm">
+                    <Settings className="w-4 h-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>Settings</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <Palette className="w-4 h-4 mr-2" />
+                    <span>Theme</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Bell className="w-4 h-4 mr-2" />
+                    <span>Notifications</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Shield className="w-4 h-4 mr-2" />
+                    <span>Privacy & Security</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Settings className="w-4 h-4 mr-2" />
+                    <span>Preferences</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <HelpCircle className="w-4 h-4 mr-2" />
+                    <span>Help & Support</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              {/* Profile Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm">
+                    <User className="w-4 h-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>
+                    <div className="flex items-center space-x-2">
+                      <UserCircle className="w-5 h-5" />
+                      <div>
+                        <p className="font-medium">John Doe</p>
+                        <p className="text-xs text-muted-foreground">john@precision.com</p>
+                      </div>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <User className="w-4 h-4 mr-2" />
+                    <span>Profile</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Settings className="w-4 h-4 mr-2" />
+                    <span>Account Settings</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Activity className="w-4 h-4 mr-2" />
+                    <span>Activity Log</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="text-red-600">
+                    <LogOut className="w-4 h-4 mr-2" />
+                    <span>Sign Out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>

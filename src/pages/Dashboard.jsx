@@ -58,13 +58,25 @@ const Dashboard = () => {
               </nav>
             </div>
             <div className="flex items-center space-x-4">
-              <Button variant="ghost" size="sm">
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => alert('Notifications feature coming soon!')}
+              >
                 <Bell className="w-4 h-4" />
               </Button>
-              <Button variant="ghost" size="sm">
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => alert('Settings feature coming soon!')}
+              >
                 <Settings className="w-4 h-4" />
               </Button>
-              <Button variant="ghost" size="sm">
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => alert('Profile feature coming soon!')}
+              >
                 <User className="w-4 h-4" />
               </Button>
             </div>
@@ -129,7 +141,7 @@ const Dashboard = () => {
                   <p className="text-2xl font-bold text-foreground">
                     ${metrics.totalLoss.toLocaleString()}
                   </p>
-                  <div className="flex items-center text-sm text-success mt-1">
+                  <div className="flex items-center text-sm text-red-500 mt-1">
                     <ArrowDownRight className="w-4 h-4 mr-1" />
                     {metrics.lossReduction}% reduction
                   </div>

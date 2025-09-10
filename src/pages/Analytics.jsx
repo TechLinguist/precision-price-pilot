@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 import { 
   TrendingUp, 
   BarChart3, 
@@ -16,6 +17,29 @@ import {
 } from "lucide-react";
 
 const Analytics = () => {
+  const { toast } = useToast();
+
+  const handleDateRange = () => {
+    toast({
+      title: "Date Range Filter",
+      description: "Date range selector will be available with backend integration.",
+    });
+  };
+
+  const handleFilters = () => {
+    toast({
+      title: "Advanced Filters",
+      description: "Advanced filtering options will be available with backend integration.",
+    });
+  };
+
+  const handleExport = () => {
+    toast({
+      title: "Export Started",
+      description: "Your analytics report is being prepared for download.",
+    });
+  };
+
   // Mock analytics data
   const analyticsData = {
     totalRevenue: 2450000,
@@ -82,15 +106,15 @@ const Analytics = () => {
             <p className="text-muted-foreground">Comprehensive insights into your pricing optimization performance</p>
           </div>
           <div className="flex space-x-4">
-            <Button variant="outline">
+            <Button variant="outline" onClick={handleDateRange}>
               <Calendar className="w-4 h-4 mr-2" />
               Date Range
             </Button>
-            <Button variant="outline">
+            <Button variant="outline" onClick={handleFilters}>
               <Filter className="w-4 h-4 mr-2" />
               Filters
             </Button>
-            <Button>
+            <Button onClick={handleExport}>
               <Download className="w-4 h-4 mr-2" />
               Export
             </Button>

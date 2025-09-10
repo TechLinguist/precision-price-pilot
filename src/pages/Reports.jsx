@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 import { 
   TrendingUp, 
   FileText, 
@@ -16,6 +17,50 @@ import {
 } from "lucide-react";
 
 const Reports = () => {
+  const { toast } = useToast();
+
+  const handleFilterReports = () => {
+    toast({
+      title: "Filter Reports",
+      description: "Advanced report filtering will be available with backend integration.",
+    });
+  };
+
+  const handleGenerateReport = () => {
+    toast({
+      title: "Report Generation Started",
+      description: "Your custom report is being generated and will be ready shortly.",
+    });
+  };
+
+  const handleViewReport = (reportName) => {
+    toast({
+      title: "Opening Report",
+      description: `Opening ${reportName} in viewer.`,
+    });
+  };
+
+  const handleShareReport = (reportName) => {
+    toast({
+      title: "Share Report",
+      description: `Sharing options for ${reportName} will be available with backend integration.`,
+    });
+  };
+
+  const handleDownloadReport = (reportName) => {
+    toast({
+      title: "Download Started",
+      description: `${reportName} is being prepared for download.`,
+    });
+  };
+
+  const handleGenerateTemplate = (templateType) => {
+    toast({
+      title: "Generating Report",
+      description: `${templateType} is being generated with current data.`,
+    });
+  };
+
   // Mock reports data
   const reports = [
     {
@@ -128,11 +173,11 @@ const Reports = () => {
             <p className="text-muted-foreground">Generate, view, and manage your pricing optimization reports</p>
           </div>
           <div className="flex space-x-4">
-            <Button variant="outline">
+            <Button variant="outline" onClick={handleFilterReports}>
               <Filter className="w-4 h-4 mr-2" />
               Filter Reports
             </Button>
-            <Button>
+            <Button onClick={handleGenerateReport}>
               <FileText className="w-4 h-4 mr-2" />
               Generate Report
             </Button>
@@ -226,13 +271,13 @@ const Reports = () => {
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Button variant="ghost" size="sm">
+                    <Button variant="ghost" size="sm" onClick={() => handleViewReport(report.name)}>
                       <Eye className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="sm">
+                    <Button variant="ghost" size="sm" onClick={() => handleShareReport(report.name)}>
                       <Share className="w-4 h-4" />
                     </Button>
-                    <Button variant="outline" size="sm" disabled={report.status !== "Ready"}>
+                    <Button variant="outline" size="sm" disabled={report.status !== "Ready"} onClick={() => handleDownloadReport(report.name)}>
                       <Download className="w-4 h-4 mr-1" />
                       Download
                     </Button>
@@ -263,7 +308,7 @@ const Reports = () => {
                 <p className="text-sm text-muted-foreground mb-3">
                   Monthly performance metrics and optimization results
                 </p>
-                <Button size="sm" className="w-full">
+                <Button size="sm" className="w-full" onClick={() => handleGenerateTemplate("Performance Report")}>
                   Generate Report
                 </Button>
               </div>
@@ -278,7 +323,7 @@ const Reports = () => {
                 <p className="text-sm text-muted-foreground mb-3">
                   Detailed profit analysis with optimization recommendations
                 </p>
-                <Button size="sm" variant="outline" className="w-full">
+                <Button size="sm" variant="outline" className="w-full" onClick={() => handleGenerateTemplate("Profit Analysis")}>
                   Generate Report
                 </Button>
               </div>
@@ -293,7 +338,7 @@ const Reports = () => {
                 <p className="text-sm text-muted-foreground mb-3">
                   Create a custom report with specific metrics and filters
                 </p>
-                <Button size="sm" variant="outline" className="w-full">
+                <Button size="sm" variant="outline" className="w-full" onClick={() => handleGenerateTemplate("Custom Report")}>
                   Create Custom
                 </Button>
               </div>

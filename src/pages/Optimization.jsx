@@ -165,7 +165,7 @@ const Optimization = () => {
                 className="absolute inset-0 opacity-0 cursor-pointer"
               />
             </Button>
-            <Button variant="outline">
+            <Button variant="outline" onClick={() => toast({ title: "Export Started", description: "Optimization results are being prepared for download." })}>
               <Download className="w-4 h-4 mr-2" />
               Export Results
             </Button>
@@ -345,13 +345,13 @@ const Optimization = () => {
                           <p className="text-sm text-muted-foreground">{product.category} • {product.warehouse}</p>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <Button variant="ghost" size="sm">
+                          <Button variant="ghost" size="sm" onClick={() => toast({ title: "Edit Product", description: `Editing ${product.name}` })}>
                             <Edit className="w-4 h-4" />
                           </Button>
-                          <Button variant="ghost" size="sm" className="text-success">
+                          <Button variant="ghost" size="sm" className="text-success" onClick={() => toast({ title: "Price Applied", description: `Optimized price applied to ${product.name}` })}>
                             <Check className="w-4 h-4" />
                           </Button>
-                          <Button variant="ghost" size="sm" className="text-danger">
+                          <Button variant="ghost" size="sm" className="text-danger" onClick={() => toast({ title: "Price Rejected", description: `Optimization rejected for ${product.name}` })}>
                             <X className="w-4 h-4" />
                           </Button>
                         </div>

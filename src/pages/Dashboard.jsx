@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 import { 
   TrendingUp, 
   DollarSign, 
@@ -25,6 +26,9 @@ import {
 } from "lucide-react";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
   // Mock data for demonstration
   const metrics = {
     totalRevenue: 2450000,
@@ -34,6 +38,35 @@ const Dashboard = () => {
     revenueGrowth: 12.3,
     profitGrowth: 8.7,
     lossReduction: -15.2
+  };
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      toast({
+        title: "File Uploaded Successfully",
+        description: `${file.name} has been uploaded and is being processed.`,
+      });
+    }
+  };
+
+  const handleExportCSV = () => {
+    toast({
+      title: "Export Started",
+      description: "Your optimized pricing data is being prepared for download.",
+    });
+  };
+
+  const handleViewReports = () => {
+    navigate('/reports');
+  };
+
+  const handleSignOut = () => {
+    toast({
+      title: "Signed Out",
+      description: "You have been successfully signed out.",
+    });
+    navigate('/login');
   };
 
   return (
@@ -172,7 +205,7 @@ const Dashboard = () => {
                     <span>Activity Log</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem className="text-red-600">
+                  <DropdownMenuItem className="text-red-600" onClick={handleSignOut}>
                     <LogOut className="w-4 h-4 mr-2" />
                     <span>Sign Out</span>
                   </DropdownMenuItem>
@@ -296,8 +329,14 @@ const Dashboard = () => {
                     <p className="text-sm text-muted-foreground mb-3">
                       Import your product catalog via CSV to start optimization
                     </p>
-                    <Button size="sm" className="w-full">
+                    <Button size="sm" className="w-full relative">
                       Upload CSV
+                      <input
+                        type="file"
+                        accept=".csv"
+                        onChange={handleFileUpload}
+                        className="absolute inset-0 opacity-0 cursor-pointer"
+                      />
                     </Button>
                   </div>
 
@@ -328,7 +367,7 @@ const Dashboard = () => {
                     <p className="text-sm text-muted-foreground mb-3">
                       Download optimized pricing data and reports
                     </p>
-                    <Button size="sm" variant="outline" className="w-full">
+                    <Button size="sm" variant="outline" className="w-full" onClick={handleExportCSV}>
                       Export CSV
                     </Button>
                   </div>
@@ -343,7 +382,7 @@ const Dashboard = () => {
                     <p className="text-sm text-muted-foreground mb-3">
                       Detailed performance metrics and profit analysis
                     </p>
-                    <Button size="sm" variant="outline" className="w-full">
+                    <Button size="sm" variant="outline" className="w-full" onClick={handleViewReports}>
                       View Reports
                     </Button>
                   </div>

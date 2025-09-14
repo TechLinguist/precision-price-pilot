@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { Slider } from "@/components/ui/slider";
 import { Link } from "react-router-dom";
 import { 
   TrendingUp, 
@@ -26,15 +27,20 @@ import { useToast } from "@/hooks/use-toast";
 const Optimization = () => {
   const { toast } = useToast();
   const [filters, setFilters] = useState({
-    warehouse: "",
-    category: "",
-    weather: "",
-    promotionActive: false,
-    stockLevel: "",
-    demandLevel: "",
+    location: [],
+    category: [],
+    weather: [],
+    promotionStatus: "all",
+    stockRange: [0, 200],
+    demandLevel: [],
+    expiryRange: [0, 365],
     priceChangeLimit: "",
-    expiryDays: "",
-    competitorPriceCheck: false
+    competitorPriceCheck: false,
+    costPriceRange: [0, 2000],
+    minProfitMargin: ""
+  });
+    costPriceRange: [0, 2000],
+    minProfitMargin: ""
   });
 
   const [isOptimizing, setIsOptimizing] = useState(false);
@@ -212,13 +218,13 @@ const Optimization = () => {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div>
-                  <Label htmlFor="warehouse">Warehouse / Location</Label>
-                  <Select value={filters.warehouse} onValueChange={(value) => setFilters({...filters, warehouse: value})}>
+                  <Label htmlFor="location">Location / Warehouse</Label>
+                  <Select value={filters.location.join(',')} onValueChange={(value) => setFilters({...filters, location: value ? [value] : []})}>
                     <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Select warehouse" />
+                      <SelectValue placeholder="Select location" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All Warehouses</SelectItem>
+                      <SelectItem value="">All Locations</SelectItem>
                       <SelectItem value="WH001">Warehouse 001 - NYC</SelectItem>
                       <SelectItem value="WH002">Warehouse 002 - LA</SelectItem>
                       <SelectItem value="WH003">Warehouse 003 - Chicago</SelectItem>
@@ -228,12 +234,12 @@ const Optimization = () => {
 
                 <div>
                   <Label htmlFor="category">Category</Label>
-                  <Select value={filters.category} onValueChange={(value) => setFilters({...filters, category: value})}>
+                  <Select value={filters.category.join(',')} onValueChange={(value) => setFilters({...filters, category: value ? [value] : []})}>
                     <SelectTrigger className="mt-1">
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All Categories</SelectItem>
+                      <SelectItem value="">All Categories</SelectItem>
                       <SelectItem value="Electronics">Electronics</SelectItem>
                       <SelectItem value="Audio">Audio</SelectItem>
                       <SelectItem value="Smart Home">Smart Home</SelectItem>
@@ -243,59 +249,116 @@ const Optimization = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="weather">Weather Conditions</Label>
-                  <Select value={filters.weather} onValueChange={(value) => setFilters({...filters, weather: value})}>
+                  <Label htmlFor="demandLevel">Demand Level</Label>
+                  <Select value={filters.demandLevel.join(',')} onValueChange={(value) => setFilters({...filters, demandLevel: value ? [value] : []})}>
                     <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Current weather" />
+                      <SelectValue placeholder="Select demand level" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All Weather</SelectItem>
-                      <SelectItem value="Sunny">Sunny</SelectItem>
+                      <SelectItem value="">All Demand Levels</SelectItem>
+                      <SelectItem value="High">High</SelectItem>
+                      <SelectItem value="Medium">Medium</SelectItem>
+                      <SelectItem value="Low">Low</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="weather">Weather Conditions</Label>
+                  <Select value={filters.weather.join(',')} onValueChange={(value) => setFilters({...filters, weather: value ? [value] : []})}>
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Select weather condition" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">All Weather</SelectItem>
                       <SelectItem value="Rainy">Rainy</SelectItem>
+                      <SelectItem value="Humidity">Humidity</SelectItem>
+                      <SelectItem value="Sunny">Sunny</SelectItem>
                       <SelectItem value="Cloudy">Cloudy</SelectItem>
                       <SelectItem value="Snowy">Snowy</SelectItem>
-                      <SelectItem value="Humidity">High Humidity</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="promotion">Promotion Active</Label>
-                  <Switch
-                    id="promotion"
-                    checked={filters.promotionActive}
-                    onCheckedChange={(checked) => setFilters({...filters, promotionActive: checked})}
+                <div>
+                  <Label htmlFor="promotionStatus">Promotion Status</Label>
+                  <Select value={filters.promotionStatus} onValueChange={(value) => setFilters({...filters, promotionStatus: value})}>
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Select promotion status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
+                      <SelectItem value="active">Active</SelectItem>
+                      <SelectItem value="inactive">Inactive</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="stockRange">Stock Units Range</Label>
+                  <div className="mt-2 space-y-2">
+                    <div className="flex justify-between text-sm text-muted-foreground">
+                      <span>{filters.stockRange[0]} units</span>
+                      <span>{filters.stockRange[1]} units</span>
+                    </div>
+                    <Slider
+                      value={filters.stockRange}
+                      onValueChange={(value) => setFilters({...filters, stockRange: value})}
+                      max={200}
+                      min={0}
+                      step={1}
+                      className="w-full"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="expiryRange">Days to Expiry Range</Label>
+                  <div className="mt-2 space-y-2">
+                    <div className="flex justify-between text-sm text-muted-foreground">
+                      <span>{filters.expiryRange[0]} days</span>
+                      <span>{filters.expiryRange[1]} days</span>
+                    </div>
+                    <Slider
+                      value={filters.expiryRange}
+                      onValueChange={(value) => setFilters({...filters, expiryRange: value})}
+                      max={365}
+                      min={0}
+                      step={1}
+                      className="w-full"
+                    />
+                    <p className="text-xs text-muted-foreground">Products with ≤30 days get automatic discounts</p>
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="costPriceRange">Cost Price Range ($)</Label>
+                  <div className="mt-2 space-y-2">
+                    <div className="flex justify-between text-sm text-muted-foreground">
+                      <span>${filters.costPriceRange[0]}</span>
+                      <span>${filters.costPriceRange[1]}</span>
+                    </div>
+                    <Slider
+                      value={filters.costPriceRange}
+                      onValueChange={(value) => setFilters({...filters, costPriceRange: value})}
+                      max={2000}
+                      min={0}
+                      step={10}
+                      className="w-full"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="minProfitMargin">Min Profit Margin (%)</Label>
+                  <Input
+                    id="minProfitMargin"
+                    type="number"
+                    placeholder="e.g., 20"
+                    value={filters.minProfitMargin}
+                    onChange={(e) => setFilters({...filters, minProfitMargin: e.target.value})}
+                    className="mt-1"
                   />
-                </div>
-
-                <div>
-                  <Label htmlFor="stockLevel">Stock Units Filter</Label>
-                  <Select value={filters.stockLevel} onValueChange={(value) => setFilters({...filters, stockLevel: value})}>
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Stock unit range" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Stock Levels</SelectItem>
-                      <SelectItem value="high">High (&gt;100 units)</SelectItem>
-                      <SelectItem value="medium">Medium (20-100 units)</SelectItem>
-                      <SelectItem value="low">Low (&lt;20 units)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label htmlFor="demandLevel">Demand Score Filter</Label>
-                  <Select value={filters.demandLevel} onValueChange={(value) => setFilters({...filters, demandLevel: value})}>
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Demand score range" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Demand Levels</SelectItem>
-                      <SelectItem value="high">High (0.7-1.0)</SelectItem>
-                      <SelectItem value="medium">Medium (0.4-0.7)</SelectItem>
-                      <SelectItem value="low">Low (0.0-0.4)</SelectItem>
-                    </SelectContent>
-                  </Select>
                 </div>
 
                 <div>
@@ -310,20 +373,8 @@ const Optimization = () => {
                   />
                 </div>
 
-                <div>
-                  <Label htmlFor="expiryDays">Days to Expiry Filter</Label>
-                  <Input
-                    id="expiryDays"
-                    type="number"
-                    placeholder="Max days to expiry"
-                    value={filters.expiryDays}
-                    onChange={(e) => setFilters({...filters, expiryDays: e.target.value})}
-                    className="mt-1"
-                  />
-                </div>
-
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="competitorCheck">Include Competitor Price</Label>
+                  <Label htmlFor="competitorCheck">Include Competitor Price Analysis</Label>
                   <Switch
                     id="competitorCheck"
                     checked={filters.competitorPriceCheck}

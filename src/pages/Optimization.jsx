@@ -27,13 +27,14 @@ const Optimization = () => {
   const { toast } = useToast();
   const [filters, setFilters] = useState({
     warehouse: "",
-    inventoryType: "",
     category: "",
+    weather: "",
     promotionActive: false,
     stockLevel: "",
     demandLevel: "",
-    priceChange: "",
-    productStatus: ""
+    priceChangeLimit: "",
+    expiryDays: "",
+    competitorPriceCheck: false
   });
 
   const [isOptimizing, setIsOptimizing] = useState(false);
@@ -41,37 +42,61 @@ const Optimization = () => {
     {
       id: 1,
       name: "Premium Laptop Pro",
-      currentPrice: 1299.99,
-      optimizedPrice: 1349.99,
       category: "Electronics",
-      stockLevel: "Medium",
+      basePrice: 1299.99,
+      optimizedPrice: 1349.99,
+      costPrice: 950.00,
+      competitorPrice: 1325.00,
+      stockUnits: 45,
+      pastSales: 120,
+      rawDemandScore: 0.8,
       demandLevel: "High",
       warehouse: "WH001",
-      profit: 250.00,
+      weather: "Sunny",
+      daysToExpiry: 365,
+      shelfLife: 730,
+      promotionActive: false,
+      profitImpact: 250.00,
       isEditing: false
     },
     {
       id: 2,
       name: "Wireless Headphones Elite",
-      currentPrice: 199.99,
-      optimizedPrice: 179.99,
       category: "Audio",
-      stockLevel: "High",
+      basePrice: 199.99,
+      optimizedPrice: 179.99,
+      costPrice: 120.00,
+      competitorPrice: 185.00,
+      stockUnits: 150,
+      pastSales: 80,
+      rawDemandScore: 0.6,
       demandLevel: "Medium",
-      warehouse: "WH002",
-      profit: -20.00,
+      warehouse: "WH002", 
+      weather: "Cloudy",
+      daysToExpiry: 180,
+      shelfLife: 365,
+      promotionActive: true,
+      profitImpact: -20.00,
       isEditing: false
     },
     {
       id: 3,
       name: "Smart Home Hub",
-      currentPrice: 89.99,
-      optimizedPrice: 109.99,
       category: "Smart Home",
-      stockLevel: "Low",
+      basePrice: 89.99,
+      optimizedPrice: 109.99,
+      costPrice: 60.00,
+      competitorPrice: 95.00,
+      stockUnits: 15,
+      pastSales: 45,
+      rawDemandScore: 0.9,
       demandLevel: "High",
       warehouse: "WH001",
-      profit: 35.00,
+      weather: "Rainy",
+      daysToExpiry: 25,
+      shelfLife: 90,
+      promotionActive: true,
+      profitImpact: 35.00,
       isEditing: false
     }
   ]);
@@ -202,21 +227,6 @@ const Optimization = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="inventoryType">Inventory Type</Label>
-                  <Select value={filters.inventoryType} onValueChange={(value) => setFilters({...filters, inventoryType: value})}>
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Select inventory type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Types</SelectItem>
-                      <SelectItem value="fast-moving">Fast Moving</SelectItem>
-                      <SelectItem value="slow-moving">Slow Moving</SelectItem>
-                      <SelectItem value="seasonal">Seasonal</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
                   <Label htmlFor="category">Category</Label>
                   <Select value={filters.category} onValueChange={(value) => setFilters({...filters, category: value})}>
                     <SelectTrigger className="mt-1">
@@ -224,10 +234,27 @@ const Optimization = () => {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All Categories</SelectItem>
-                      <SelectItem value="electronics">Electronics</SelectItem>
-                      <SelectItem value="audio">Audio</SelectItem>
-                      <SelectItem value="smart-home">Smart Home</SelectItem>
-                      <SelectItem value="accessories">Accessories</SelectItem>
+                      <SelectItem value="Electronics">Electronics</SelectItem>
+                      <SelectItem value="Audio">Audio</SelectItem>
+                      <SelectItem value="Smart Home">Smart Home</SelectItem>
+                      <SelectItem value="Accessories">Accessories</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="weather">Weather Conditions</Label>
+                  <Select value={filters.weather} onValueChange={(value) => setFilters({...filters, weather: value})}>
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Current weather" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Weather</SelectItem>
+                      <SelectItem value="Sunny">Sunny</SelectItem>
+                      <SelectItem value="Rainy">Rainy</SelectItem>
+                      <SelectItem value="Cloudy">Cloudy</SelectItem>
+                      <SelectItem value="Snowy">Snowy</SelectItem>
+                      <SelectItem value="Humidity">High Humidity</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -242,13 +269,13 @@ const Optimization = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="stockLevel">Stock Level</Label>
+                  <Label htmlFor="stockLevel">Stock Units Filter</Label>
                   <Select value={filters.stockLevel} onValueChange={(value) => setFilters({...filters, stockLevel: value})}>
                     <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Select stock level" />
+                      <SelectValue placeholder="Stock unit range" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All Levels</SelectItem>
+                      <SelectItem value="all">All Stock Levels</SelectItem>
                       <SelectItem value="high">High (&gt;100 units)</SelectItem>
                       <SelectItem value="medium">Medium (20-100 units)</SelectItem>
                       <SelectItem value="low">Low (&lt;20 units)</SelectItem>
@@ -257,45 +284,51 @@ const Optimization = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="demandLevel">Demand Level</Label>
+                  <Label htmlFor="demandLevel">Demand Score Filter</Label>
                   <Select value={filters.demandLevel} onValueChange={(value) => setFilters({...filters, demandLevel: value})}>
                     <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Select demand level" />
+                      <SelectValue placeholder="Demand score range" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All Demand Levels</SelectItem>
-                      <SelectItem value="high">High Demand</SelectItem>
-                      <SelectItem value="medium">Medium Demand</SelectItem>
-                      <SelectItem value="low">Low Demand</SelectItem>
+                      <SelectItem value="high">High (0.7-1.0)</SelectItem>
+                      <SelectItem value="medium">Medium (0.4-0.7)</SelectItem>
+                      <SelectItem value="low">Low (0.0-0.4)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div>
-                  <Label htmlFor="priceChange">Price Change (%)</Label>
+                  <Label htmlFor="priceChangeLimit">Max Price Change (%)</Label>
                   <Input
-                    id="priceChange"
+                    id="priceChangeLimit"
                     type="number"
-                    placeholder="Max change percentage"
-                    value={filters.priceChange}
-                    onChange={(e) => setFilters({...filters, priceChange: e.target.value})}
+                    placeholder="e.g., 15"
+                    value={filters.priceChangeLimit}
+                    onChange={(e) => setFilters({...filters, priceChangeLimit: e.target.value})}
                     className="mt-1"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="productStatus">Product Status (Optional)</Label>
-                  <Select value={filters.productStatus} onValueChange={(value) => setFilters({...filters, productStatus: value})}>
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Select status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Status</SelectItem>
-                      <SelectItem value="active">Active</SelectItem>
-                      <SelectItem value="discontinued">Discontinued</SelectItem>
-                      <SelectItem value="new">New Launch</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Label htmlFor="expiryDays">Days to Expiry Filter</Label>
+                  <Input
+                    id="expiryDays"
+                    type="number"
+                    placeholder="Max days to expiry"
+                    value={filters.expiryDays}
+                    onChange={(e) => setFilters({...filters, expiryDays: e.target.value})}
+                    className="mt-1"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="competitorCheck">Include Competitor Price</Label>
+                  <Switch
+                    id="competitorCheck"
+                    checked={filters.competitorPriceCheck}
+                    onCheckedChange={(checked) => setFilters({...filters, competitorPriceCheck: checked})}
+                  />
                 </div>
 
                 <Button 
@@ -357,24 +390,49 @@ const Optimization = () => {
                         </div>
                       </div>
                       
-                      <div className="grid md:grid-cols-4 gap-4 text-sm">
+                      <div className="grid md:grid-cols-5 gap-4 text-sm">
                         <div>
-                          <p className="text-muted-foreground">Current Price</p>
-                          <p className="font-semibold">${product.currentPrice}</p>
+                          <p className="text-muted-foreground">Base Price</p>
+                          <p className="font-semibold">${product.basePrice}</p>
                         </div>
                         <div>
                           <p className="text-muted-foreground">Optimized Price</p>
                           <p className="font-semibold text-primary">${product.optimizedPrice}</p>
                         </div>
                         <div>
-                          <p className="text-muted-foreground">Profit Impact</p>
-                          <p className={`font-semibold ${product.profit > 0 ? 'text-success' : 'text-danger'}`}>
-                            {product.profit > 0 ? '+' : ''}${product.profit}
-                          </p>
+                          <p className="text-muted-foreground">Stock Units</p>
+                          <p className="font-medium">{product.stockUnits} units</p>
                         </div>
                         <div>
-                          <p className="text-muted-foreground">Stock/Demand</p>
-                          <p className="font-medium">{product.stockLevel} / {product.demandLevel}</p>
+                          <p className="text-muted-foreground">Demand Score</p>
+                          <p className="font-medium">{product.rawDemandScore}/1.0</p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground">Days to Expiry</p>
+                          <p className={`font-medium ${product.daysToExpiry < 30 ? 'text-warning' : 'text-muted-foreground'}`}>
+                            {product.daysToExpiry} days
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="grid md:grid-cols-4 gap-4 text-sm mt-3 pt-3 border-t border-border">
+                        <div>
+                          <p className="text-muted-foreground">Cost Price</p>
+                          <p className="font-medium">${product.costPrice}</p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground">Competitor Price</p>
+                          <p className="font-medium">${product.competitorPrice}</p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground">Weather</p>
+                          <p className="font-medium">{product.weather}</p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground">Profit Impact</p>
+                          <p className={`font-semibold ${product.profitImpact > 0 ? 'text-success' : 'text-danger'}`}>
+                            {product.profitImpact > 0 ? '+' : ''}${product.profitImpact}
+                          </p>
                         </div>
                       </div>
                     </div>
